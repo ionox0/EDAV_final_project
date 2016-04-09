@@ -1,0 +1,134 @@
+                                            x   freq
+2                                      AGENCY      1
+14             City Vehicle Placard Complaint      1
+19                               CONSTRUCTION      1
+50                Gas Station Discharge Lines      1
+58                 Homeless Person Assistance      1
+62                        Illegal Tree Damage      1
+63                              Indoor Sewage      1
+64                           Industrial Waste      1
+68                                 Laboratory      1
+82                       Non-Residential Heat      1
+89                    Overgrown Tree/Branches      1
+106                                   Smoking      1
+117                     Street Sign - Damaged      1
+122                               Taxi Report      1
+125                               Unspecified      1
+22                               Damaged Tree      2
+39                            Ferry Complaint      2
+48                 For Hire Vehicle Complaint      2
+49                       Forensic Engineering      2
+71                    Maintenance or Facility      2
+127                          VACANT APARTMENT      2
+96                Public Assembly - Temporary      3
+104                                     Sewer      3
+114                    Standpipe - Mechanical      3
+121                            Taxi Complaint      3
+65                              Interior Demo      4
+105                        Sidewalk Condition      4
+112                                  Squeegee      4
+118                     Street Sign - Missing      4
+116                    Street Light Condition      5
+131                        Water Conservation      5
+12                          Broken Muni Meter      6
+25                                  Dead Tree      6
+97                                  Rangehood      7
+100                                    Rodent      7
+111                    Sprinkler - Mechanical      7
+54                        Hazardous Materials      8
+6                            Animal in a Park      9
+44                   Fire Alarm - Replacement      9
+55                         Hazmat Storage/Use      9
+75                                      Noise      9
+115                          Street Condition     15
+47                       Foam Ban Enforcement     16
+4                                 Air Quality     17
+40                      Fire Alarm - Addition     21
+67                                 Invitation     24
+130                   Violation of Park Rules     32
+95                            Public Assembly     36
+84                          Open Flame Permit     37
+88              Overflowing Recycling Baskets     38
+72                             Misc. Comments     45
+113                             Stalled Sites     52
+1                              Adopt-A-Basket     61
+83                                   NONCONST     66
+73                   Miscellaneous Categories     67
+109      Special Natural Area District (SNAD)     77
+133                              Water System     79
+69                         Literature Request     89
+17                                 Compliment    120
+16                                  Complaint    125
+42                    Fire Alarm - New System    125
+41                  Fire Alarm - Modification    129
+99                    Request for Information    136
+38              Emergency Response Team (ERT)    159
+60                          Illegal Fireworks    172
+15                     Collection Truck Noise    195
+77                         Noise - Helicopter    222
+103                           Scaffold Safety    262
+21                        Cranes and Derricks    279
+43                  Fire Alarm - Reinspection    302
+30                           Disorderly Youth    315
+91                                Panhandling    327
+119                       Sweeping/Inadequate    426
+9                   Bike/Roller/Skate Chronic    478
+3                               Agency Issues    485
+8                            BEST/Site Safety    505
+126                       Urinating in Public    641
+94                      Posting Advertisement    681
+66        Investigations and Discipline (IAD)    854
+24                     DCA Literature Request    918
+98                      Recycling Enforcement   1007
+78                   Noise - House of Worship   1070
+33                       EAP Inspection - F59   1082
+37                                   ELEVATOR   1207
+26                           Derelict Bicycle   1284
+120                           Sweeping/Missed   1351
+32                                   Drinking   1410
+87                 Overflowing Litter Baskets   1563
+11                                    Boilers   1687
+86                           OUTSIDE BUILDING   1834
+23  DCA / DOH New License Application Request   1857
+128                                Vacant Lot   2385
+70                    Litter Basket / Request   2620
+35                                 Electrical   2841
+79                               Noise - Park   4110
+129                                   Vending   4195
+108                       Special Enforcement   4366
+110   Special Projects Inspection Team (SPIT)   4582
+45                 Fire Safety Director - F58   4753
+57                        Homeless Encampment   4882
+123                                   Traffic   5198
+92                                   Plumbing   5258
+85                          Other Enforcement   6521
+18                               Construction   7067
+101                                    SAFETY  10486
+5                                Animal Abuse  10552
+59                     HPD Literature Request  11498
+7                                   APPLIANCE  12514
+107                                      Snow  13008
+36                                   Elevator  13068
+53                                   Graffiti  16318
+20                         Consumer Complaint  18536
+28                          Derelict Vehicles  18957
+81                            Noise - Vehicle  19367
+27                           Derelict Vehicle  21668
+74          Missed Collection (All Materials)  25349
+13                               Building/Use  28795
+51                                    GENERAL  29076
+46                            FLOORING/STAIRS  30038
+52              General Construction/Plumbing  30309
+34                                   ELECTRIC  32335
+102                      Sanitation Condition  32523
+29                           Dirty Conditions  34551
+132                                WATER LEAK  38794
+31                                DOOR/WINDOW  43303
+76                         Noise - Commercial  44136
+80                    Noise - Street/Sidewalk  51702
+93                                   PLUMBING  59439
+90                              PAINT/PLASTER  74669
+124                      UNSANITARY CONDITION  90886
+61                            Illegal Parking  92722
+10                           Blocked Driveway 101007
+56                             HEAT/HOT WATER 228300
