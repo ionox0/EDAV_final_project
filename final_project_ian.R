@@ -41,6 +41,22 @@ complaints_subset = df[
     df$Complaint.Type == "Disorderly Youth"
   ]
 youth = subset(df, Complaint.Type == "Disorderly Youth")
+
+# manhattan zipcodes
+zips_data = read.table('manhattan_zips.tsv', sep='\t')
+zips_full = data.frame(borough=character(0), neighborhood=character(0), zip=character(0), stringsAsFactors=FALSE)
+for (i in 1:42) {
+  zips = unlist(strsplit(as.character(zips_data[i,3]), ", "))
+  for (j in 1:length(zips)) {
+    a = as.character(zips_data[i,1])
+    b = as.character(zips_data[i,2])
+    c = as.character(zips[j])
+    zips_full[i*3+j - 3,] = c(a, b, c)
+  }
+}
+
+library(zipcode)
+
 # Histogram
 histogram(Complaint.Type~Incident.Zip | Complaint.Type, data=youth,
        xlab="X", ylab="Y", 
