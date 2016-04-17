@@ -1,27 +1,21 @@
 library(plyr)
 library(lattice)
 
+df = read.csv('data/2015.csv')
+
 setwd('~/Desktop/Columbia/EDAV/Final Project')
+
+# Column for response time
+df$response_time = as.Date(df$Closed.Date, "%m/%d/%Y %H:%M:%S %p") - as.Date(df$Created.Date, "%m/%d/%Y %H:%M:%S %p")
 
 # Complaint types (133)
 unique(unlist(df$Complaint.Type, use.names = FALSE))
 
-# Rename columns
-
 # Histogram of call types
 count(df$Complaint.Type)
 
-# Map by call type
 
-# Avg response time by zipcode
-# Avg response time by call type
-# Ave response time by call type by zipcode
 
-# % resolved by call type
-# % resolved by zip code
-# % resolved by zip code by call type (trellis)
-
-# Avg response time by % resolved
 
 # Complaint type counts ordered by freq
 counts = count(df$Complaint.Type)
@@ -35,10 +29,13 @@ write.csv(unique(unlist(df$Agency.Name, use.names = FALSE)), file = "MyData.csv"
 
 # Subset to just selected complaint types
 complaints_subset = df[
-    df$Complaint.Type == "Disorderly Youth" ||
-    df$Complaint.Type == "Disorderly Youth" ||
-    df$Complaint.Type == "Disorderly Youth" ||
-    df$Complaint.Type == "Disorderly Youth"
+    df$Complaint.Type == "HEAT/HOT WATER" ||
+    df$Complaint.Type == "Blocked Driveway" ||
+    df$Complaint.Type == "Illegal Parking" ||
+    df$Complaint.Type == "UNSANITARY CONDITION" ||
+    df$Complaint.Type == "PAINT/PLASTER" ||
+    df$Complaint.Type == "PLUMBING" ||
+    df$Complaint.Type == "Noise - Street/Sidewalk"
   ]
 youth = subset(df, Complaint.Type == "Disorderly Youth")
 
@@ -55,23 +52,19 @@ for (i in 1:42) {
   }
 }
 
-library(zipcode)
-
-# Histogram
-histogram(Complaint.Type~Incident.Zip | Complaint.Type, data=youth,
-       xlab="X", ylab="Y", 
-       main="Title")
-
-hist(youth, x = youth$Incident.Zip)
-
-sum(is.na(df$Incident.Zip))
-
+# join borough and neighborhood data to complaints data (takes forever)
+df_merged = merge(df, zips_full, "left", by.x="Incident.Zip", by.y="zip")
 
 # Create list of unique complaint types
 types = unique(df$Complaint.Type)
+
 # Use to subset our complaints
-first_half = subset(df, subset = Complaint.Type %in% types[1:50])
+complaints_subset = subset(df_merged, subset = Complaint.Type %in% types[20:30])
+manhattan_zips = zips_full[zips_full$borough == 'Manhattan',]$zip
+manhattan_complaints_subset = subset(complaints_subset, subset = as.character(Incident.Zip) %in% manhattan_zips)
+
 # Trellis hist of first 50 complaint types by zip
-histogram(Complaint.Type~Incident.Zip | Complaint.Type, data=first_half,
+histogram(~Complaint.Type | neighborhood, data=manhattan_complaints_subset,
           xlab="X", ylab="Y", 
-          main="Title")
+          main="Title",
+          scales=list(x=list(rot=45)))
