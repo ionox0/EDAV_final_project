@@ -113,108 +113,9 @@ Avg_Response_Temp <- aggregate(Weather_311[c("Response.Time")],
           FUN=mean,na.rm=TRUE)
 
 # Lattice plots of case response time per complaint type
-ggplot(Avg_Response_Temp,aes(Mean.TemperatureF,Response.Time))+
-  geom_point()+facet_wrap(~Complaint.Type,nrow=2) + 
-  scale_y_log10(breaks=c(1, 10, 120, 1460, 8760),
-                labels=c("1 Hour", "10 Hours", "5 Days", "2 Months", "1 Year"))+
-  labs(x="Mean Temperature (deg. F)", y="Response Time",
-       title="Response Time per Complaint Type by Average Temperature")+ 
-  theme(plot.title = element_text(size=14,face="bold"),
-        axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-
-Avg_Response_Temp <- aggregate(Weather_311[c("Response.Time")],
-                               by=list(Mean.TemperatureF=Weather_311$Mean.TemperatureF,
-                                       Complaint.Type=Weather_311$Complaint.Type,
-                                       Events=Weather_311$Events
-                               ),
-                               FUN=mean,na.rm=TRUE)
-
-ggplot(Avg_Response_Temp,aes(Mean.TemperatureF,Response.Time,colour=Events))+
-  geom_point()+facet_wrap(~Complaint.Type,nrow=2) + 
-  scale_y_log10(breaks=c(1, 10, 120, 1460, 8760),
-                labels=c("1 Hour", "10 Hours", "5 Days", "2 Months", "1 Year"))+
-  labs(x="Mean Temperature (deg. F)", y="Response Time",
-       title="Response Time per Complaint Type by Avg. Temp. & Weather Event")+ 
-  theme(plot.title = element_text(size=14,face="bold"),
-        axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-
-
-Avg_Response_Wind <- aggregate(Weather_311[c("Response.Time")],
-                               by=list(Mean.Wind.SpeedMPH=Weather_311$Mean.Wind.SpeedMPH,
-                                       Complaint.Type=Weather_311$Complaint.Type
-                               ),
-                               FUN=mean,na.rm=TRUE)
-
-ggplot(Avg_Response_Wind,aes(Mean.Wind.SpeedMPH,Response.Time))+
-  geom_point()+facet_wrap(~Complaint.Type,nrow=2) + 
-  scale_y_log10(breaks=c(1, 10, 120, 1460, 8760),
-                labels=c("1 Hour", "10 Hours", "5 Days", "2 Months", "1 Year"))+
-  labs(x="Mean Wind Speed (MPH)", y="Response Time",
-       title="Response Time per Complaint Type by Average Wind Speed")+ 
-  theme(plot.title = element_text(size=14,face="bold"),
-        axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-
-Avg_Response_Wind <- aggregate(Weather_311[c("Response.Time")],
-                               by=list(Mean.Wind.SpeedMPH=Weather_311$Mean.Wind.SpeedMPH,
-                                       Complaint.Type=Weather_311$Complaint.Type,
-                                       Events=Weather_311$Events
-                               ),
-                               FUN=mean,na.rm=TRUE)
-
-ggplot(Avg_Response_Wind,aes(Mean.Wind.SpeedMPH,Response.Time,colour=Events))+
-  geom_point()+facet_wrap(~Complaint.Type,nrow=2) + 
-  scale_y_log10(breaks=c(1, 10, 120, 1460, 8760),
-                labels=c("1 Hour", "10 Hours", "5 Days", "2 Months", "1 Year"))+
-  labs(x="Mean Wind Speed (MPH)", y="Response Time",
-       title="Response Time per Complaint Type by Avg. Wind & Weather Events")+ 
-  theme(plot.title = element_text(size=14,face="bold"),
-        axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-
-Avg_Response_Vis <- aggregate(Weather_311[c("Response.Time")],
-                               by=list(Mean.VisibilityMiles=Weather_311$Mean.VisibilityMiles,
-                                       Complaint.Type=Weather_311$Complaint.Type
-                               ),
-                               FUN=mean,na.rm=TRUE)
-
-ggplot(Avg_Response_Vis,aes(Mean.VisibilityMiles,Response.Time))+
-  geom_point()+facet_wrap(~Complaint.Type,nrow=2) + 
-  scale_y_log10(breaks=c(1, 10, 120, 1460, 8760),
-                labels=c("1 Hour", "10 Hours", "5 Days", "2 Months", "1 Year"))+
-  labs(x="Mean Visibility (Miles)", y="Response Time",
-       title="Response Time per Complaint Type by Average Visibility")+ 
-  theme(plot.title = element_text(size=14,face="bold"),
-        axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-
-Avg_Response_Vis <- aggregate(Weather_311[c("Response.Time")],
-                              by=list(Mean.VisibilityMiles=Weather_311$Mean.VisibilityMiles,
-                                      Complaint.Type=Weather_311$Complaint.Type,
-                                      Events=Weather_311$Events
-                              ),
-                              FUN=mean,na.rm=TRUE)
-
-ggplot(Avg_Response_Vis,aes(Mean.VisibilityMiles,Response.Time,colour=Events))+
-  geom_point()+facet_wrap(~Complaint.Type,nrow=2) + 
-  scale_y_log10(breaks=c(1, 10, 120, 1460, 8760),
-                labels=c("1 Hour", "10 Hours", "5 Days", "2 Months", "1 Year"))+
-  labs(x="Mean Visibility (Miles)", y="Response Time",
-       title="Response Time per Complaint Type by Avg. Visibility & Weather Events")+ 
-  theme(plot.title = element_text(size=14,face="bold"),
-        axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-
 W3 <- data.table(Weather_311)
-Avg_Response_Precip <- W3[, list(Mean.Response.Time=sum(mean(Response.Time)), 
+Avg_Response_Precip <- W3[is.na(Complaint.Type)==FALSE, 
+                          list(Mean.Response.Time=sum(mean(Response.Time)), 
                                  Count=sum(length(Response.Time))), 
                                    by=list(PrecipitationIn,Complaint.Type,Season)]
 
@@ -225,6 +126,40 @@ ggplot(Avg_Response_Precip,aes(PrecipitationIn,Mean.Response.Time,colour=Season,
                 labels=c("1 Hour", "10 Hours", "5 Days", "2 Months", "1 Year"))+
   labs(x="Total Precipitation (in.)", y="Response Time",
        title="Response Time per Complaint Type by Precipitation & Season")+ 
+  theme(plot.title = element_text(size=14,face="bold"),
+        axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))
+
+
+
+Avg_Response_Humid <- W3[is.na(Complaint.Type)==FALSE, 
+                         list(Mean.Response.Time=sum(mean(Response.Time)), 
+                                 Count=sum(length(Response.Time))), 
+                          by=list(Mean.Humidity,Complaint.Type,Season)]
+
+ggplot(Avg_Response_Humid,aes(Mean.Humidity,Mean.Response.Time,colour=Season,
+                               size=Count))+
+  geom_point()+facet_wrap(~Complaint.Type,nrow=2) + 
+  scale_y_log10(breaks=c(1, 10, 120, 1460, 8760),
+                labels=c("1 Hour", "10 Hours", "5 Days", "2 Months", "1 Year"))+
+  labs(x="Mean Humidity (%)", y="Response Time",
+       title="Response Time per Complaint Type by Humidity & Season")+ 
+  theme(plot.title = element_text(size=14,face="bold"),
+        axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))
+
+Avg_Response_Temp <- W3[is.na(Complaint.Type)==FALSE, 
+                         list(Mean.Response.Time=sum(mean(Response.Time)), 
+                              Count=sum(length(Response.Time))), 
+                         by=list(Mean.TemperatureF,Complaint.Type,Season)]
+
+ggplot(Avg_Response_Temp,aes(Mean.TemperatureF,Mean.Response.Time,colour=Season,
+                              size=Count))+
+  geom_point()+facet_wrap(~Complaint.Type,nrow=2) + 
+  scale_y_log10(breaks=c(1, 10, 120, 1460, 8760),
+                labels=c("1 Hour", "10 Hours", "5 Days", "2 Months", "1 Year"))+
+  labs(x="Mean Temperature (deg. F)", y="Response Time",
+       title="Response Time per Complaint Type by Avg. Temp. & Season")+ 
   theme(plot.title = element_text(size=14,face="bold"),
         axis.text=element_text(size=12),
         axis.title=element_text(size=14,face="bold"))
