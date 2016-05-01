@@ -81,11 +81,14 @@ df_slim <- df_slim[df_slim$response_time != 0,]
 
 
 ```{r data merging: Weather}
+###########################
+# Merge to weather data #
+###########################
 # Format date
 Weather$EST <- as.Date(Weather$EST,format="%Y-%m-%d")
 
 # Select relevant weather columns
-Weather <- Weather[,c("EST","Mean.TemperatureF",Mean.Humidity","PrecipitationIn")]
+Weather <- Weather[,c("EST","Mean.TemperatureF","Mean.Humidity","PrecipitationIn")]
 
 # Replace 'T' for trace precipitation with very small value
 dum_precip <- ifelse(Weather$PrecipitationIn=='T',0.00001,
