@@ -210,3 +210,22 @@ ggplot(Avg_Response_Vis,aes(Mean.VisibilityMiles,Response.Time,colour=Events))+
   theme(plot.title = element_text(size=14,face="bold"),
         axis.text=element_text(size=12),
         axis.title=element_text(size=14,face="bold"))
+
+
+Avg_Response_Precip <- aggregate(Weather_311[c("Response.Time")],
+                               by=list(PrecipitationIn=Weather_311$PrecipitationIn,
+                                       Complaint.Type=Weather_311$Complaint.Type,
+                                       Season=Weather_311$Season
+                               ),
+                               FUN=mean,na.rm=TRUE)
+
+
+ggplot(Avg_Response_Precip,aes(PrecipitationIn,Response.Time,colour=Season))+
+  geom_point()+facet_wrap(~Complaint.Type,nrow=2) + 
+  scale_y_log10(breaks=c(1, 10, 120, 1460, 8760),
+                labels=c("1 Hour", "10 Hours", "5 Days", "2 Months", "1 Year"))+
+  labs(x="Total Precipitation (in.)", y="Response Time",
+       title="Response Time per Complaint Type by Precipitation & Season")+ 
+  theme(plot.title = element_text(size=14,face="bold"),
+        axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))
