@@ -1,62 +1,80 @@
 library(plyr)
 library(lattice)
 library(lubridate)
-library(Hmisc)
-library("latticeExtra")
-library(lattice)
-library(ggplot2)
-library(stats)
-library(graphics)
-
 
 setwd('~/Desktop/Columbia/EDAV/Final Project')
 df = read.csv('data/2015.csv')
-finance = mdb.get('AVROLL.mdb')
-avroll = finance$avroll
+zillow = read.csv('Zip_Zhvi_Summary_AllHomes.csv')
 
 
 
-###########################
-# Complaints data section #
-###########################
+f <- function(x, output) {
+  if (substr(x[3], 0, 1) == " ") {
+    x[3] = gsub(" ", "0", x[3])
+  }
+}
+
+apply(zillow, 1, f)
+
+nyc_zips = read.csv('nyc_zipcodes.csv')
+nyc_zillow = merge(zillow, nyc_zips, "left", by.x="RegionName", by.y="zip")
+
+
+
+
+######################
+#      311 Data      #
+######################
+
+# Subset to top 7 complaints
+df = df[ which(
+  df$Complaint.Type == "HEAT/HOT WATER" |
+    df$Complaint.Type == "Blocked Driveway" |
+    df$Complaint.Type == "Illegal Parking" |
+    df$Complaint.Type == "UNSANITARY CONDITION" |
+    df$Complaint.Type == "PAINT/PLASTER" |
+    df$Complaint.Type == "PLUMBING" |
+    df$Complaint.Type == "Noise - Street/Sidewalk"
+), ]
+
+# Column for response time
+closed_dates = mdy_hms(df$Closed.Date)
+created_dates = mdy_hms(df$Created.Date)
+df$response_time = difftime(closed_dates, created_dates, units="mins")
+df$response_time = as.numeric(df$response_time, units="mins")
+
+# Avg resp time per zipcode
+avg_response_time = sapply(split(df$response_time, df$Incident.Zip), mean) 
+avg_resp_per_zipcode = data.frame(zipcode=names(avg_response_time), time=avg_response_time, row.names=NULL)
+write.csv(avg_resp_per_zipcode, file='response_time_average_values.csv')
 
 # Remove bad zipcodes (takes a while)
 df = df[!is.na(df$Incident.Zip),]
 df$Incident.Zip = substr(df$Incident.Zip, 0, 5)
 
-# Subset to top seven complaint types
-df = subset(df, Complaint.Type == "HEAT/HOT WATER" | 
-                 Complaint.Type == "Blocked Driveway" | 
-                 Complaint.Type == "Illegal Parking" |
-                 Complaint.Type == "UNSANITARY CONDITION" |
-                 Complaint.Type == "PAINT/PLASTER" |
-                 Complaint.Type == "PLUMBING" |
-                 Complaint.Type == "Noise - Street/Sidewalk")
-
-# Column for response time
-closed_dates = mdy_hms(df$Closed.Date)
-created_dates = mdy_hms(df$Created.Date)
-df$response_time = difftime(closed_dates, created_dates, units="hours")
-df$response_time = as.numeric(df$response_time, units="hours")
 
 
 
 
-################################
-# Building prices data section #
-################################
+#####################
+#    Zillow Data    #
+#####################
 
-# Calculate mean building price per zipcode
-avg_prices = sapply(split(avroll$FULLVAL, avroll$ZIP), mean) 
-avg_prices_df = data.frame(zipcode=names(avg_prices), value=avg_prices, row.names=NULL)
+zillow <- zillow[ which(zillow$City=='New York'), ]
+
+
+
+
+
 
 
 
 
 ########################
-# Combine into Trellis #
+#       Trellis        #
 ########################
-df_merged = merge(df, avg_prices_df, "left", by.x="Incident.Zip", by.y="zipcode")
+
+df_merged = merge(df, zillow, "left", by.x="Incident.Zip", by.y="zipcode")
 
 # Aggregating
 rel_df = data.frame(zip=df_merged$Incident.Zip,
@@ -93,16 +111,10 @@ pg = ggplot(rel_df_avg_with_prices_boroughs, aes(value, time)) +
   ggtitle("Average Building Value vs Average Response Time per Zipcode across Top 7 Complaints")
 
 pg + theme(axis.text=element_text(size=12),
-        axis.title=element_text(size=16)
-        # plot.margin=unit(c(10,10,10,10),"mm")
-        )
+           axis.title=element_text(size=16)
+           # plot.margin=unit(c(10,10,10,10),"mm")
+)
 
 print(pg)
-
-# -> No relationship b/w avg building price and response time. Show lm stats to confirm:
-fit = lm(value ~ time, data = rel_df_avg_with_prices)
-summary(fit)
-plot(value ~ time, data = rel_df_avg_with_prices)
-abline(fit)
 
 

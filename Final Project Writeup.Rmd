@@ -1,3 +1,17 @@
+---
+title: "Final Project Markdown"
+author: "ian johnson"
+date: "May 1, 2016"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(plyr)
+library(lattice)
+library(lubridate)
 library(plyr)
 library(lattice)
 library(lubridate)
@@ -8,30 +22,43 @@ library(ggplot2)
 library(stats)
 library(graphics)
 
-
 setwd('~/Desktop/Columbia/EDAV/Final Project')
 df = read.csv('data/2015.csv')
 finance = mdb.get('AVROLL.mdb')
-avroll = finance$avroll
+```
 
 
+
+## Abstract
+
+Our analysis of the 311 complaints data was focused on determining the factors that played into variance in reponse time for different complaint types. We were interested in which of these factors might play the largest role in causing an increase in response time, so that we might be able to draw conclusions on how best to remedy handle the negative effects of this variable. To investigate response time we chose the top 7 complaints by count, and looked into several independent variables from the original dataset, as well as from other datasets from alternative sources. We then form a predictive model that takes into account these various factors, and allows us to predetermine a response time given certain initial conditions for the complaint. 
+
+
+## Data Cleanup
+
+There were several steps that we took to massage the data into a more useful form in order to perform our analyses. First off, we chose to use only data from the year 2015, in order to make sure that our analyses were being performed on a consistend subset of the data, and to give us faster times for further subsetting and data manipulation. 
+
+
+```{r cleanup}
 
 ###########################
 # Complaints data section #
 ###########################
 
-# Remove bad zipcodes (takes a while)
+# Remove bad zipcodes
 df = df[!is.na(df$Incident.Zip),]
 df$Incident.Zip = substr(df$Incident.Zip, 0, 5)
 
 # Subset to top seven complaint types
-df = subset(df, Complaint.Type == "HEAT/HOT WATER" | 
-                 Complaint.Type == "Blocked Driveway" | 
-                 Complaint.Type == "Illegal Parking" |
-                 Complaint.Type == "UNSANITARY CONDITION" |
-                 Complaint.Type == "PAINT/PLASTER" |
-                 Complaint.Type == "PLUMBING" |
-                 Complaint.Type == "Noise - Street/Sidewalk")
+df = df[ which(
+    df$Complaint.Type == "HEAT/HOT WATER" |
+    df$Complaint.Type == "Blocked Driveway" |
+    df$Complaint.Type == "Illegal Parking" |
+    df$Complaint.Type == "UNSANITARY CONDITION" |
+    df$Complaint.Type == "PAINT/PLASTER" |
+    df$Complaint.Type == "PLUMBING" |
+    df$Complaint.Type == "Noise - Street/Sidewalk"
+  ), ]
 
 # Column for response time
 closed_dates = mdy_hms(df$Closed.Date)
@@ -39,7 +66,26 @@ created_dates = mdy_hms(df$Created.Date)
 df$response_time = difftime(closed_dates, created_dates, units="hours")
 df$response_time = as.numeric(df$response_time, units="hours")
 
+# Slimmed down version of relevant columns
+df_slim = df[,c("Created.Date","Agency","Complaint.Type", "Incident.Zip", "response_time")]
+```
 
+
+
+
+
+
+
+
+```{r financial_prediction}
+
+avroll = finance$avroll
+condensed = finance$`Condensed Roll Description`
+
+# Calculate mean building price per zipcode
+avg_vals = sapply(split(avroll$FULLVAL, avroll$ZIP), mean) 
+avg_vals_df = data.frame(zipcode=names(avg_vals), value=avg_vals, row.names=NULL)
+write.csv(avg_vals_df, file='zipcode_average_values.csv')
 
 
 ################################
@@ -104,5 +150,8 @@ fit = lm(value ~ time, data = rel_df_avg_with_prices)
 summary(fit)
 plot(value ~ time, data = rel_df_avg_with_prices)
 abline(fit)
+
+```
+
 
 

@@ -5,9 +5,6 @@ library(lubridate)
 setwd('~/Desktop/Columbia/EDAV/Final Project')
 df = read.csv('data/2015.csv')
 
-
-
-
 # Column for response time
 closed_dates = mdy_hms(df$Closed.Date)
 created_dates = mdy_hms(df$Created.Date)
@@ -73,15 +70,15 @@ cat(capture.output(ordered_counts), file = 'dframe.txt', sep = '\n')
 write.csv(unique(unlist(df$Agency.Name, use.names = FALSE)), file = "MyData.csv")
 
 # Subset to just selected complaint types
-complaints_subset = df[
-    df$Complaint.Type == "HEAT/HOT WATER" ||
-    df$Complaint.Type == "Blocked Driveway" ||
-    df$Complaint.Type == "Illegal Parking" ||
-    df$Complaint.Type == "UNSANITARY CONDITION" ||
-    df$Complaint.Type == "PAINT/PLASTER" ||
-    df$Complaint.Type == "PLUMBING" ||
+df = df[ which(
+    df$Complaint.Type == "HEAT/HOT WATER" |
+    df$Complaint.Type == "Blocked Driveway" |
+    df$Complaint.Type == "Illegal Parking" |
+    df$Complaint.Type == "UNSANITARY CONDITION" |
+    df$Complaint.Type == "PAINT/PLASTER" |
+    df$Complaint.Type == "PLUMBING" |
     df$Complaint.Type == "Noise - Street/Sidewalk"
-  ]
+  ), ]
 youth = subset(df, Complaint.Type == "Disorderly Youth")
 
 # manhattan zipcodes
