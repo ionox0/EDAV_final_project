@@ -32,20 +32,34 @@ top_complaints$Response.Time <- difftime(strptime(top_complaints$Closed.Date,
                                          strptime(top_complaints$Created.Date, 
                                                   format="%m/%d/%Y %H:%M:%S %p"),
                                          units="hours")
-# n <- dim(top_complaints)[1]
-# for(i in 1:n){
-#   temp_create_date <- strptime(top_complaints$Created.Date[i],
-#                                format = "%m/%d/%Y %I:%M:%S %p")
-#   temp_close_date <- strptime(top_complaints$Closed.Date[i], 
-#                               format = "%m/%d/%Y %I:%M:%S %p")
-#   if (is.na(temp_close_date)){
-#     temp_close_date <- strptime(format(Sys.time(), "%m/%d/%Y %I:%M:%S %p"),
-#                                 format = "%m/%d/%Y %I:%M:%S %p")
-#   }
-#   top_complaints$Response.Time[i] <- difftime(temp_close_date,
-#                                                 temp_create_date,
-#                                                 units="hours")
-# }
+
+# Complaints that were opened and closed immediately
+bogus_response <- top_complaints[which(top_complaints$Response.Time == 0),]
+
+table(bogus_response$Agency)
+# All 6051 are from HPD
+
+table(bogus_response$Agency,bogus_response$Complaint.Type)
+# 5089 Heat/Hot Water, 38 Paint/Plaster, 89 Plumbing, 73 Unsanitary Condition
+
+table(bogus_response$Resolution.Description)
+# 4187 do not have any complaint resolution description
+# 231 are duplicate complaints, 626 + 5 + 826 confirmed that issue was corrected,
+# 39 were inspected with no violations issued, 25 were inspected with violations issued,
+# 50 were inspected with violations previously issued, 
+# 2 + 59 were unable to be inspected and the case was closed
+# 1 was unable to be inspected, but violations were issued
+
+# Plot locations of zero response time complaints
+map <- get_map(location = "New York City, NY", zoom = 10) 
+mapPoints <- ggmap(map) + 
+  geom_point(aes(x = Longitude, y = Latitude,color=Complaint.Type), 
+             data = bogus_response, alpha = 0.5) +
+  labs(title = "Complaints with Zero Response Time: 2015") +
+  theme(plot.title = element_text(size=14,face="bold"),
+        axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))
+mapPoints
 
 
 top_complaints$Year <- format(strptime(top_complaints$Created.Date,
@@ -65,13 +79,6 @@ Weather_311 <- merge(top_complaints,Weather,by.x="Weather.Join.Key",
 
 Weather_311$Response.Time <- as.numeric(Weather_311$Response.Time)
 
-# Take small sample of dataset
-n <- dim(top_complaints)[1]
-SampleSize <- 1000
-SampleIndices <- sample(c(1:n),size=SampleSize,replace=F)
-Data_2015_Sample <- top_complaints[SampleIndices,]
-Data_2015_Sample <- Data_2015_Sample[!is.na(Data_2015_Sample$Latitude),]
-SampleSize <- dim(Data_2015_Sample)[1]
 
 Avg_Response_Temp <- aggregate(Weather_311[c("Response.Time")],
           by=list(Mean.TemperatureF=Weather_311$Mean.TemperatureF,
@@ -178,62 +185,3 @@ ggplot(Avg_Response_Vis,aes(Mean.VisibilityMiles,Response.Time,colour=Events))+
   theme(plot.title = element_text(size=14,face="bold"),
         axis.text=element_text(size=12),
         axis.title=element_text(size=14,face="bold"))
-
-
-
-# Basic exploratory plots of complaint types on maps
-map <- get_map(location = "New York City, NY", zoom = 10) 
-mapPoints <- ggmap(map) + 
-  geom_point(aes(x = Longitude, y = Latitude,color=Agency), 
-             data = Data_2015_Sample, alpha = 0.5) +
-  labs(title = "311 Complaint Locations by Agency: 2015") +
-  theme(plot.title = element_text(size=14,face="bold"),
-        axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-mapPoints
-
-mapPoints <- ggmap(map) + 
-  geom_point(aes(x = Longitude, y = Latitude,color=Agency,size=Response.Time), 
-             data = Data_2015_Sample, alpha = 0.5) +
-  labs(title = "311 Complaint Locations by Agency and Response Time: 2015") +
-  theme(plot.title = element_text(size=14,face="bold"),
-        axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-mapPoints
-
-mapPoints <- ggmap(map) + 
-  geom_point(aes(x = Longitude, y = Latitude,color=Agency,size=Response.Time), 
-             data = subset(Data_2015_Sample,Status=="Open"), alpha = 0.5) +
-  labs(title = "Open 311 Complaint Locations by Agency and Response Time: 2015") +
-  theme(plot.title = element_text(size=14,face="bold"),
-        axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-mapPoints
-
-mapPoints <- ggmap(map) + 
-  geom_point(aes(x = Longitude, y = Latitude,color=Agency,size=Response.Time), 
-             data = subset(Data_2015_Sample,Status=="Closed"), alpha = 0.5) +
-  labs(title = "Closed 311 Complaint Locations by Agency and Response Time: 2015") +
-  theme(plot.title = element_text(size=14,face="bold"),
-        axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-mapPoints
-
-
-mapPoints <- ggmap(map) + 
-  geom_point(aes(x = Longitude, y = Latitude,color=Agency,size=Response.Time), 
-             data = subset(Data_2015_Sample,Complaint.Type=="HEAT/HOT WATER"), alpha = 0.5) +
-  labs(title = "Heat/Hot Water 311 Complaint Locations by Agency and Response Time: 2015") +
-  theme(plot.title = element_text(size=14,face="bold"),
-        axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-mapPoints
-
-mapPoints <- ggmap(map) + 
-  geom_point(aes(x = Longitude, y = Latitude,color=Agency,size=Response.Time), 
-             data = subset(Data_2015_Sample,Complaint.Type=="HEAT/HOT WATER"), alpha = 0.5) +
-  labs(title = "Heat/Hot Water 311 Complaint Locations by Agency and Response Time: 2015") +
-  theme(plot.title = element_text(size=14,face="bold"),
-        axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-mapPoints
