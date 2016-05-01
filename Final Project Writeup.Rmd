@@ -66,8 +66,15 @@ created_dates = mdy_hms(df$Created.Date)
 df$response_time = difftime(closed_dates, created_dates, units="hours")
 df$response_time = as.numeric(df$response_time, units="hours")
 
+# Select cases that were created in 2015
+df$Year <- format(strptime(df$Created.Date,format = "%m/%d/%Y %I:%M:%S %p"),"%Y")
+df <- df[df_slim$Year=="2015",]
+
 # Slimmed down version of relevant columns
 df_slim = df[,c("Created.Date","Agency","Complaint.Type", "Incident.Zip", "response_time")]
+
+# Select cases with non-zero response time
+df_slim <- df_slim[df_slim$response_time != 0,]
 ```
 
 
