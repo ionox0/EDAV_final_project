@@ -76,6 +76,25 @@ dum_precip <- ifelse(Weather$PrecipitationIn=='T',0.00001,
 dum_precip <- as.numeric(dum_precip)
 Weather$PrecipitationIn <- dum_precip
 
+# Add variable for weather season
+season_function <- function(element){
+  element <- as.Date(element,format="%Y-%m-%d")
+  if(element < "2015-03-20" | element >= "2015-12-21"){
+    return("Winter")
+  }
+  if(element >= "2015-03-20" & element < "2015-06-21"){
+    return("Spring")
+  }
+  if(element >= "2015-06-21" & element < "2015-09-23"){
+    return("Summer")
+  }
+  else{
+    return("Autumn")
+  }
+}
+temp_season <- sapply(Weather$EST,season_function)
+Weather$Season <- temp_season
+
 # Join weather data to 311 data
 top_complaints$Weather.Join.Key <- as.Date(top_complaints$Created.Date,
                                              format="%m/%d/%Y")
