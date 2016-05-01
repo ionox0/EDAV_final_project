@@ -65,12 +65,18 @@ mapPoints
 top_complaints$Year <- format(strptime(top_complaints$Created.Date,
                                          format = "%m/%d/%Y %I:%M:%S %p"),"%Y")
 
-top_complaints <- top_complaints[top_complaints$Year=="2015",]
+top_complaints <- top_complaints[top_complaints$Year=="2015" & 
+                                 top_complaints$Response.Time != 0,]
 
-# Join weather data to 311 data
 Weather$EST <- as.Date(Weather$EST,format="%Y-%m-%d")
 
+# Replace 'T' for trace precipitation with very small value
+dum_precip <- ifelse(Weather$PrecipitationIn=='T',0.00001,
+                         Weather$PrecipitationIn)
+dum_precip <- as.numeric(dum_precip)
+Weather$PrecipitationIn <- dum_precip
 
+# Join weather data to 311 data
 top_complaints$Weather.Join.Key <- as.Date(top_complaints$Created.Date,
                                              format="%m/%d/%Y")
 
