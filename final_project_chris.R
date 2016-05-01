@@ -2,6 +2,7 @@ library(ggplot2)
 library(leaflet) 
 library(maps)
 library(ggmap)
+library(data.table)
 
 # Read the weather data
 Weather <- read.csv(file="NYC_Weather_2015.csv",header=TRUE,sep=","
@@ -212,15 +213,13 @@ ggplot(Avg_Response_Vis,aes(Mean.VisibilityMiles,Response.Time,colour=Events))+
         axis.title=element_text(size=14,face="bold"))
 
 
-Avg_Response_Precip <- aggregate(Weather_311[c("Response.Time")],
-                               by=list(PrecipitationIn=Weather_311$PrecipitationIn,
-                                       Complaint.Type=Weather_311$Complaint.Type,
-                                       Season=Weather_311$Season
-                               ),
-                               FUN=mean,na.rm=TRUE)
+W3 <- data.table(Weather_311)
+Avg_Response_Precip <- W3[, list(Mean.Response.Time=sum(mean(Response.Time)), 
+                                 Count=sum(length(Response.Time))), 
+                                   by=list(PrecipitationIn,Complaint.Type,Season)]
 
-
-ggplot(Avg_Response_Precip,aes(PrecipitationIn,Response.Time,colour=Season))+
+ggplot(Avg_Response_Precip,aes(PrecipitationIn,Mean.Response.Time,colour=Season,
+                               size=Count))+
   geom_point()+facet_wrap(~Complaint.Type,nrow=2) + 
   scale_y_log10(breaks=c(1, 10, 120, 1460, 8760),
                 labels=c("1 Hour", "10 Hours", "5 Days", "2 Months", "1 Year"))+
