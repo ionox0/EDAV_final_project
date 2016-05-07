@@ -4,3 +4,6 @@ data
 AVROLL.mdb
 DCP_POPS_NYC_BigApps.mdb
 data_with_neighborhoods.csv
+slim_data.csv
+slimmed-down-data-with-income.csv
+

@@ -97,8 +97,6 @@ avg_prices = sapply(split(avroll$FULLVAL, avroll$ZIP), mean)
 avg_prices_df = data.frame(zipcode=names(avg_prices), value=avg_prices, row.names=NULL)
 
 
-
-
 ########################
 # Combine into Trellis #
 ########################
