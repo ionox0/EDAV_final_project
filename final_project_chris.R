@@ -96,6 +96,15 @@ season_function <- function(element){
 temp_season <- sapply(Weather$EST,season_function)
 Weather$Season <- temp_season
 
+table(Weather$Season,Weather$Events)
+# 67 days in Autumn; 61 in Spring; 74 in Summer; 48 in Winter with no events
+
+table(Weather$Events)
+# 250 days in 2015 with no major weather events
+
+sum(Weather$PrecipitationIn)
+# 40.93022 total inches of precipitation in 2015
+
 # Join weather data to 311 data
 top_complaints$Weather.Join.Key <- as.Date(top_complaints$Created.Date,
                                              format="%m/%d/%Y")
