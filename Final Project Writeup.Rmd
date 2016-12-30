@@ -25,6 +25,7 @@ library(graphics)
 setwd('~/Desktop/Columbia/EDAV/Final Project')
 df = read.csv('data/2015.csv')
 finance = mdb.get('AVROLL.mdb')
+nyc_zips = read.csv('nyc_zipcodes.csv')
 Weather <- read.csv(file="NYC_Weather_2015.csv",header=TRUE,sep=","
                       ,stringsAsFactors=FALSE)
 ```
@@ -205,4 +206,7 @@ abline(fit)
 ```
 
 
+```{r }
+
+```
 
