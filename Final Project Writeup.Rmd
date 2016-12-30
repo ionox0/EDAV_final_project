@@ -21,6 +21,8 @@ library(lattice)
 library(ggplot2)
 library(stats)
 library(graphics)
+library(devtools)
+library(choroplethrZip)
 
 setwd('~/Desktop/Columbia/EDAV/Final Project')
 df = read.csv('data/2015.csv')
